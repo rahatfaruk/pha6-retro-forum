@@ -1,5 +1,11 @@
 const postsListEl = document.getElementById('posts-list')
 const latestPostsEl = document.getElementById('latest-posts')
+const markedPostsListEl = document.getElementById('marked-posts-list')
+const markedPostsCountEl = document.getElementById('marked-posts-counter')
+
+
+let fetchedPosts = []
+let markedPostsCount = 0
 
 function renderPost(post) {
   const postHtml = `
@@ -34,7 +40,7 @@ function renderPost(post) {
             <span>${post.posted_time} min</span>
           </li>
           <li class="ml-auto">
-            <button class="bg-green-400 px-2 py-1 rounded-full"> <i class="bi bi-envelope-open-fill hover:opacity-50"></i> </button>
+            <button class="mark-read-btn bg-green-400 px-2 py-1 rounded-full" data-post-id="${post.id}"> <i class="bi bi-envelope-open-fill hover:opacity-50"></i> </button>
           </li>
         </ul>
       </div>
@@ -62,6 +68,19 @@ function renderLatestPost(post) {
     </div>
   `
   latestPostsEl.insertAdjacentHTML('beforeend', postHtml)
+}
+
+function renderMarkedPost(post) {
+  const markedPostHtml = `
+    <li class="flex justify-between gap-4 bg-white p-3 rounded-md">
+      <h4 class="font-bold">${post.title}</h4>
+      <p class="flex gap-2">
+        <i class="bi bi-eye"></i>
+        <span>${post.view_count}</span>
+      </p>
+    </li>
+  `
+  markedPostsListEl.insertAdjacentHTML('beforeend', markedPostHtml)
 }
 
 function showLoader(targetEl) {
@@ -97,6 +116,7 @@ async function getAndRenderPosts( category) {
   
   if (data.posts) {
     const posts = data.posts 
+    fetchedPosts = posts
     // hide loader after 2s; then render posts
     setTimeout(() => {
       hideLoader(postsListEl)
@@ -137,5 +157,21 @@ async function getAndRenderLatestPosts() {
 // run these on page-load
 window.addEventListener('DOMContentLoaded', () => {
   getAndRenderPosts()
-  getAndRenderLatestPosts()  
+  // getAndRenderLatestPosts()  
+})
+
+// capture mark-as-read btn click
+postsListEl.addEventListener('click', e => {
+  const markReadBtn = e.target.closest('.mark-read-btn')
+  if (markReadBtn) {
+    const selectedPostId = markReadBtn.dataset.postId
+    const selectedPost = fetchedPosts.find(post => post.id.toString() === selectedPostId)
+
+    // update marked-count
+    markedPostsCount += 1
+    markedPostsCountEl.textContent = markedPostsCount
+    // render selected post into marked-list
+    renderMarkedPost(selectedPost)
+
+  }
 })
