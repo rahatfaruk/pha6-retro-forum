@@ -1,4 +1,5 @@
 const postsListEl = document.getElementById('posts-list')
+const latestPostsEl = document.getElementById('latest-posts')
 
 function renderPost(post) {
   const postHtml = `
@@ -43,6 +44,26 @@ function renderPost(post) {
   postsListEl.insertAdjacentHTML('beforeend', postHtml)
 }
 
+function renderLatestPost(post) {
+  const postHtml = `
+    <div class="max-w-sm text-center md:text-left border border-gray-400 p-4 rounded-md">
+      <img src="${post.cover_image}" class="mb-4 rounded-lg w-full" alt="">
+      <p><i class="bi bi-calendar-event"></i> <span>${post.author.posted_date ? post.author.posted_date : 'No publish date'}</span></p>
+      <h3 class="font-bold text-lg mb-1 mt-2">${post.title}</h3>
+      <p class="text-gray-700 mb-4">${post.description}</p>
+      <!-- user -->
+      <div class="flex items-center justify-center md:justify-normal gap-4">
+        <img src="${post.profile_image}" class="rounded-full w-12 h-12" alt="">
+        <div>
+          <h4 class="text-lg">${post.author.name}</h4>
+          <p class="text-gray-700 text-sm">${post.author.designation ? post.author.designation : 'Unknown'}</p>
+        </div>
+      </div>
+    </div>
+  `
+  latestPostsEl.insertAdjacentHTML('beforeend', postHtml)
+}
+
 function showLoader(targetEl) {
   targetEl.innerHTML = `
     <div class='flex justify-center'>
@@ -68,14 +89,11 @@ async function fetchData(url) {
   }
 } 
 
-async function getAndRenderPosts(category) {
+async function getAndRenderPosts( category) {
   postsListEl.innerHTML = ''
   showLoader(postsListEl)
 
   const {data, error} = await fetchData( `https://openapi.programming-hero.com/api/retro-forum/posts` + (category ? `?category=${category}` : '') )
-  
-  // {posts: Array(6), message: 'successfully fetched the posts'}
-  // {status: false, data: Array(0)}
   
   if (data.posts) {
     const posts = data.posts 
@@ -92,30 +110,32 @@ async function getAndRenderPosts(category) {
       postsListEl.textContent = error || 'Data fetching failed! Wrong request link!'
     }, 2000)
   }
+}
 
+async function getAndRenderLatestPosts() {
+  latestPostsEl.innerHTML = ''
+  showLoader(latestPostsEl)
+  const {data: posts, error} = await fetchData( `https://openapi.programming-hero.com/api/retro-forum/latest-posts` )
+  console.log(posts, error);
 
-
-  return
-  // if we get error, show error message; else render posts inside associate element 
-  if(error || data.status !== false) {
-    // hide loader after 2s; then render error
-    setTimeout(() => {
-      hideLoader(postsListEl)
-      postsListEl.textContent = error || 'Data fetching failed!'
-    }, 2000)
-  } else {
-    const posts = data.posts 
+  if (Array.isArray(posts)) {
     // hide loader after 2s; then render posts
     setTimeout(() => {
-      hideLoader(postsListEl)
-      posts.forEach(post => renderPost(post))
+      hideLoader(latestPostsEl)
+      posts.forEach(post => renderLatestPost(post))
     }, 2000)
-  } 
-  
-
+    
+  } else {
+    // hide loader after 2s; then render error
+    setTimeout(() => {
+      hideLoader(latestPostsEl)
+      latestPostsEl.textContent = error || 'Data fetching failed! Wrong request link!'
+    }, 2000)
+  }
 }
 
 // run these on page-load
 window.addEventListener('DOMContentLoaded', () => {
   getAndRenderPosts()
+  getAndRenderLatestPosts()  
 })
