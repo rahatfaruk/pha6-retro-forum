@@ -10,8 +10,32 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-  <header>
-    <h1 class="text-red-500">Retro Forum</h1>
+  <header class="p-4">
+    <!-- ## navbar -->
+    <nav class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- logo -->
+      <div>
+        <img src="./images/logo.png" alt="logo">
+      </div>
+      <!-- links -->
+      <ul class="flex gap-4">
+        <li>
+          <a href="#" class="inline-block py-1 px-2 border border-gray-500 rounded-full bg-gray-100 hover:bg-white" title="home"> <i class="bi bi-house-door"></i> </a>
+        </li>
+        <li>
+          <a href="#" class="inline-block py-1 px-2 border border-gray-500 rounded-full bg-gray-100 hover:bg-white" title="edit"> <i class="bi bi-pencil"></i> </a>
+        </li>
+        <li>
+          <a href="#" class="inline-block py-1 px-2 border border-gray-500 rounded-full bg-gray-100 hover:bg-white" title="add"> <i class="bi bi-person-plus"></i> </a>
+        </li>
+        <li>
+          <a href="#" class="inline-block py-1 px-2 border border-gray-500 rounded-full bg-gray-100 hover:bg-white" title="flag"> <i class="bi bi-flag"></i> </a>
+        </li>
+        <li>
+          <a href="#" class="inline-block px-4 py-1 bg-indigo-400 text-white rounded-3xl hover:bg-indigo-600">Sign In</a>
+        </li>
+      </ul>
+    </nav>
   </header>
 
   <main></main>
