@@ -10,7 +10,7 @@ let markedPostsCount = 0
 
 function renderPost(post) {
   const postHtml = `
-    <div class="flex items-start gap-6 p-4 mb-4 rounded-md bg-gray-200">
+    <div class="flex flex-col md:flex-row items-start gap-6 p-4 mb-4 rounded-md bg-gray-200">
       <!-- img-box -->
       <div class="relative w-20 h-20 border">
         <img src="${post.image}" class="w-full rounded-md" alt="">
