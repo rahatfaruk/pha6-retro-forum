@@ -2,6 +2,7 @@ const postsListEl = document.getElementById('posts-list')
 const latestPostsEl = document.getElementById('latest-posts')
 const markedPostsListEl = document.getElementById('marked-posts-list')
 const markedPostsCountEl = document.getElementById('marked-posts-counter')
+const searchCategoryForm = document.getElementById('search-category-form')
 
 
 let fetchedPosts = []
@@ -40,7 +41,7 @@ function renderPost(post) {
             <span>${post.posted_time} min</span>
           </li>
           <li class="ml-auto">
-            <button class="mark-read-btn bg-green-400 px-2 py-1 rounded-full" data-post-id="${post.id}"> <i class="bi bi-envelope-open-fill hover:opacity-50"></i> </button>
+            <button class="mark-read-btn bg-green-400 text-white px-2 py-1 rounded-full" data-post-id="${post.id}"> <i class="bi bi-envelope-open-fill hover:opacity-50"></i> </button>
           </li>
         </ul>
       </div>
@@ -116,11 +117,17 @@ async function getAndRenderPosts( category) {
   
   if (data.posts) {
     const posts = data.posts 
+    // update local-posts var
     fetchedPosts = posts
+
     // hide loader after 2s; then render posts
     setTimeout(() => {
       hideLoader(postsListEl)
-      posts.forEach(post => renderPost(post))
+      if (category && posts.length === 0) {
+        postsListEl.textContent = 'No search result found!'
+      } else {
+        posts.forEach(post => renderPost(post))
+      }
     }, 2000)
     
   } else {
@@ -136,7 +143,6 @@ async function getAndRenderLatestPosts() {
   latestPostsEl.innerHTML = ''
   showLoader(latestPostsEl)
   const {data: posts, error} = await fetchData( `https://openapi.programming-hero.com/api/retro-forum/latest-posts` )
-  console.log(posts, error);
 
   if (Array.isArray(posts)) {
     // hide loader after 2s; then render posts
@@ -154,13 +160,13 @@ async function getAndRenderLatestPosts() {
   }
 }
 
-// run these on page-load
+// on page-load, do these task
 window.addEventListener('DOMContentLoaded', () => {
   getAndRenderPosts()
-  // getAndRenderLatestPosts()  
+  getAndRenderLatestPosts()  
 })
 
-// capture mark-as-read btn click
+// capture mark-as-read btn click & do relevant task
 postsListEl.addEventListener('click', e => {
   const markReadBtn = e.target.closest('.mark-read-btn')
   if (markReadBtn) {
@@ -173,5 +179,18 @@ postsListEl.addEventListener('click', e => {
     // render selected post into marked-list
     renderMarkedPost(selectedPost)
 
+  }
+})
+
+// search posts by category 
+searchCategoryForm.addEventListener('submit', e => {
+  e.preventDefault()
+
+  const query = searchCategoryForm['search-category-inp'].value.trim()
+  if (query) {
+    getAndRenderPosts(query)
+    searchCategoryForm.reset()
+  } else {
+    alert('category name can not be empty')
   }
 })
