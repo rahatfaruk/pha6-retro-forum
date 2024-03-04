@@ -4,7 +4,7 @@
   - Built with html, tailwind, js. Built by Rahat Faruk (me)
   - source repo: [B9A6-Retro-Forum](https://github.com/ProgrammingHero1/B9A6-Retro-Forum)
   - My private repo: https://github.com/Programming-Hero-Web-Course4/b9a6-retro-forum-rahatfaruk 
-  - My live link: 
+  - My live link (netlify): https://cool-pegasus-d287bb.netlify.app 
 
 ### Case study:
 I have created custom loader using tailwind. Marked-as-read functionality implemantation was hard. I solved by using *postId* of clicked btn & global *allPosts* var which was required to avoid extra data fetching. I also have to show loader for at least 2s. So, I used setTimeout before rendering data.
